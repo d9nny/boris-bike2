@@ -19,8 +19,9 @@ describe DockingStation do
     expect {subject.release_bike}.to raise_error("No bikes available")
   end
 
-  # it 'refuses to dock bike when already at capacity' do
-  #   expect {subject.dock(bike)}.to raise_error("Already full")
-  # end
+  it 'refuses to dock bike when already at capacity' do
+    subject.dock(Bike.new)
+    expect {subject.dock(:bike)}.to raise_error("Already full")
+  end
 
 end
