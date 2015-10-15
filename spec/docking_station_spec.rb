@@ -36,4 +36,20 @@ describe DockingStation do
     expect(subject.capacity).to eq 20
   end
 
+  it 'docking station should not release broken bikes' do
+    bike = Bike.new
+    5.times {}
+    subject.dock(bike, false)
+    expect(subject.release_bike).to_not eq bike 
+  end
+
+  it 'docking station does not release a broken bike, just working ones' do
+    bike1 = Bike.new
+    bike2 = Bike.new
+    subject.dock(bike1, false)
+    subject.dock(bike2, true)
+    expect(subject.release_bike).to eq bike2 
+  end
+
+
 end
