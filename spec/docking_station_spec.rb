@@ -55,4 +55,12 @@ describe DockingStation do
     expect(subject.release_bike).to eq bike2
   end
 
+  # it { is_expected.to respond_to(:repair) }
+
+
+  # it 'repair collects the broken bikes' do
+  #   bike1 = Bike.new
+  #   p subject.dock(bike1, false)
+  #   p expect(subject.repair).to eq bike1
+  # end
 end
