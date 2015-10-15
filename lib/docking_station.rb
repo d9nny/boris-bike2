@@ -4,19 +4,19 @@ class DockingStation
 
   DEFAULT_CAPACITY = 20
 
-  attr_reader :bikes, :capacity, :broken_bikes
+  attr_reader :bikes, :capacity, :broken
 
   def initialize(capacity=DEFAULT_CAPACITY)
     @bikes = []
-    @broken_bikes = []
+    @broken = []
     @capacity = capacity
   end
 
   def release_bike
     fail 'No bikes available' if empty?
-    @bikes.each do |bike|  
+    @bikes.each do |bike|
       return @bikes.delete(bike) if bike.working?
-    end  
+    end
     "No working bikes"
   end
 
@@ -26,13 +26,14 @@ class DockingStation
     @bikes << bike
   end
 
-  # def broken_bikes
-  #   @bikes.select do |bike| 
-  #     if bike.working == false
-  #       @broken_bikes << bike 
-  #     end
-  #   end
-  # end
+  def broken_bikes
+    @bikes.each do |bike|
+      if !bike.working?
+        @broken << @bikes.delete(bike)
+      end
+    end
+    @broken
+  end
 
   def full?
     @bikes.length >= @capacity
@@ -42,9 +43,7 @@ class DockingStation
     @bikes.empty?
   end
 
-
   private :full?, :empty?
-
 end
 
 
