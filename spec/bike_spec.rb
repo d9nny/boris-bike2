@@ -9,6 +9,8 @@ describe Bike do
   it 'returns working? as true as default value' do
     expect(subject.working?).to eq true
   end
-
-
+	
+	it 'repairs a bike' do
+		expect(subject.fix).to eq(true)
+	end
 end

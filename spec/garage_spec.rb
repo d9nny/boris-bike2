@@ -12,4 +12,13 @@ describe Garage do
       expect(subject.van_collect(station)).to eq([1,2,3,4,5])
     end
   end
+
+  it {is_expected.to respond_to :repair}
+
+	let(:bike) { double :bike}
+  it 'repairs the broken bikes' do
+  	allow(bike).to receive(:working).and_return(false) 
+  	work_queue = [bike]
+  	expect(subject.repair).to 
+  end
 end

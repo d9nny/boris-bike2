@@ -1,8 +1,17 @@
 require_relative 'docking_station'
 
 class Garage
+
+
+
   def van_collect(station)
-    station.broken_bikes
+    @work_queue = station.broken_bikes
+  end
+
+  def repair
+  	# @work_queue.each do |bike|
+  	
+  	# end
   end
 
   def van_distribute
