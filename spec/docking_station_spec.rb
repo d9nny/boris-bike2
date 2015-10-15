@@ -27,4 +27,14 @@ describe DockingStation do
     expect {subject.full?}.to raise_error(NoMethodError)
   end
 
+  it 'allows a user to input a capacity' do
+    station = DockingStation.new(30)
+    expect(station.capacity).to eq 30
+  end
+
+  it 'capacity defaults to DEFAULT_CAPACITY if no user input' do 
+    expect(subject.capacity).to eq 20
+  end
+
+
 end
