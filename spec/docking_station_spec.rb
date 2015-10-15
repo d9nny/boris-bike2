@@ -24,4 +24,8 @@ describe DockingStation do
     expect {subject.dock(Bike.new)}.to raise_error("Already full")
   end
 
+  it 'refuses to call private methods' do
+    expect {subject.full?}.to raise_error(NoMethodError)
+  end
+
 end
