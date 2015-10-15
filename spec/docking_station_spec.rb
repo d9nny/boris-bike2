@@ -1,11 +1,15 @@
 require 'docking_station'
 
 describe DockingStation do
+
+  let(:bike) { double :bike }
+
   it { is_expected.to respond_to :release_bike }
 
   describe '#release_bike' do
     it 'releases a bike' do
-      bike = Bike.new
+      allow(bike).to receive(:working?).and_return(true)
+      allow(bike).to receive(:working).and_return(true)
       subject.dock(bike)
       expect(subject.release_bike).to eq bike
     end
@@ -19,8 +23,9 @@ describe DockingStation do
   end
 
   it 'refuses to dock bike when already at capacity' do
-    DockingStation::DEFAULT_CAPACITY.times { subject.dock(Bike.new) }
-    expect {subject.dock(Bike.new)}.to raise_error("Already full")
+    allow(bike).to receive(:working?).and_return(true)
+    DockingStation::DEFAULT_CAPACITY.times { subject.dock(bike) }
+    expect {subject.dock(bike)}.to raise_error("Already full")
   end
 
   it 'refuses to call private methods' do
@@ -36,20 +41,18 @@ describe DockingStation do
     expect(subject.capacity).to eq 20
   end
 
-  it 'docking station should not release broken bikes' do
-    bike = Bike.new
-    5.times {}
-    subject.dock(bike, false)
-    expect(subject.release_bike).to_not eq bike 
-  end
-
+    let(:bike3) { double :bike3 }
   it 'docking station does not release a broken bike, just working ones' do
-    bike1 = Bike.new
-    bike2 = Bike.new
-    subject.dock(bike1, false)
-    subject.dock(bike2, true)
-    expect(subject.release_bike).to eq bike2 
-  end
+    allow(bike3).to receive(:working?).and_return(false)
+    allow(bike3).to receive(:working).and_return(false)
+    allow(bike).to receive(:working?).and_return(true)
+    allow(bike).to receive(:working).and_return(true)
 
+    bike1 = bike3
+    bike2 = bike  #potentially an issue?
+    subject.dock(bike1)
+    subject.dock(bike2)
+    expect(subject.release_bike).to eq bike2
+  end
 
 end
