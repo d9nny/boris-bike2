@@ -11,7 +11,7 @@ attr_reader :work_queue
 
   def repair
   	@work_queue.each do |bike| 
-      bike.fix 
+      bike.fix
     end
   end
 

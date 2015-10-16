@@ -11,6 +11,6 @@ describe Bike do
   end
 	
 	it 'repairs a bike' do
-		expect(subject.fix).to eq(true)
+		expect(subject.fix).to eq (true)
 	end
 end

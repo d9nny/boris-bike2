@@ -16,12 +16,14 @@ describe Garage do
 
   it {is_expected.to respond_to :repair}
 
-
+  let (:bike) {double :bike}
+  let(:station) { double :station}
   it 'repairs the broken bikes' do
-  	 bike = Bike.new
-    bike.report_broken
-     @work_queue = [bike]
-  	p expect(subject.repair(@work_queue) { |bike| bike.working?}).to eq true
+    allow(station).to receive(:broken_bikes).and_return([bike])
+    expect(bike).to receive(:fix)
+    subject.van_collect(station)
+    subject.repair
   end
 
 end
+
