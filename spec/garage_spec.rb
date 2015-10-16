@@ -1,4 +1,5 @@
 require 'garage'
+require 'bike'
 
 describe Garage do
 
@@ -15,10 +16,12 @@ describe Garage do
 
   it {is_expected.to respond_to :repair}
 
-	let(:bike) { double :bike}
+
   it 'repairs the broken bikes' do
-  	allow(bike).to receive(:working).and_return(false) 
-  	work_queue = [bike]
-  	expect(subject.repair).to 
+  	 bike = Bike.new
+    bike.report_broken
+     @work_queue = [bike]
+  	p expect(subject.repair(@work_queue) { |bike| bike.working?}).to eq true
   end
+
 end
