@@ -2,28 +2,33 @@ require 'garage'
 require 'bike'
 
 describe Garage do
-
-	it { is_expected.to respond_to :van_collect }
-  it { is_expected.to respond_to :van_distribute }
+  let(:garage) {described_class.new}
+  let(:station) { double :station}
+  let (:bike) {double :bike}
 
   describe '#van_collect' do
-    let(:station) { double :station}
     it 'collects broken bike from a specified docking station' do
       allow(station).to receive(:broken_bikes).and_return([1,2,3,4,5])
-      expect(subject.van_collect(station)).to eq([1,2,3,4,5])
+      expect(garage.van_collect(station)).to eq([1,2,3,4,5])
     end
   end
 
-  it {is_expected.to respond_to :repair}
-
-  let (:bike) {double :bike}
-  let(:station) { double :station}
-  it 'repairs the broken bikes' do
-    allow(station).to receive(:broken_bikes).and_return([bike])
-    expect(bike).to receive(:fix)
-    subject.van_collect(station)
-    subject.repair
+  describe '#repair' do
+    it 'repairs the broken bikes' do
+      allow(station).to receive(:broken_bikes).and_return([bike])
+      expect(bike).to receive(:fix)
+      garage.van_collect(station)
+      garage.repair
+    end
   end
 
+  describe '#van_distribute' do
+    it 'docks working bikes back into the station' do
+      allow(station).to receive(:broken_bikes).and_return([bike])
+      expect(station).to receive(:dock)
+      garage.van_collect(station)
+      garage.van_distribute(station)
+    end
+  end
 end
 

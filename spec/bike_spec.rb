@@ -1,16 +1,22 @@
 require 'bike'
 
 describe Bike do
-  it { is_expected.to respond_to :working? }
-  it 'returns working? as false a broken bike is reported' do
-    expect(subject.report_broken).to eq false
+
+  let(:bike) {described_class.new}
+
+  it 'initialises a bike as working' do
+    expect(bike.working?).to eq true
   end
 
-  it 'returns working? as true as default value' do
-    expect(subject.working?).to eq true
+  it 'changes working to false' do
+    expect(bike.report_broken).to eq false
+  end
+
+  it 'returns working status of the bike' do
+    expect(bike.working?).to eq true
   end
 	
 	it 'repairs a bike' do
-		expect(subject.fix).to eq (true)
+		expect(bike.fix).to eq (true)
 	end
 end

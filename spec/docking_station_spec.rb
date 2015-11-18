@@ -2,64 +2,74 @@ require 'docking_station'
 
 describe DockingStation do
 
-  let(:bike) { double :bike }
+  let(:docking_station) {described_class.new}
+  let(:bike1) { double :bike }
+  let(:bike2) { double :bike }
 
-  it { is_expected.to respond_to :release_bike }
+  describe '#initialize' do
+    it 'allows a user to input a capacity' do
+      station = DockingStation.new(30)
+      expect(station.capacity).to eq 30
+    end
 
-  describe '#release_bike' do
-    it 'releases a bike' do
-      allow(bike).to receive(:working?).and_return(true)
-      allow(bike).to receive(:working).and_return(true)
-      subject.dock(bike)
-      expect(subject.release_bike).to eq bike
+    it 'capacity defaults to DEFAULT_CAPACITY if no user input' do
+      expect(docking_station.capacity).to eq 20
     end
   end
 
-  it { is_expected.to respond_to(:dock).with(2) }
-  it { is_expected.to respond_to(:bikes) }
+  describe '#release_bike' do
+    it 'releases a bike' do
+      allow(bike1).to receive(:working?).and_return(true)
+      docking_station.dock(bike1)
+      expect(docking_station.release_bike).to eq bike1
+    end
 
-  it 'raises error when there are no more bikes available' do
-    expect {subject.release_bike}.to raise_error("No bikes available")
+    it 'raises error when docking_station is empty' do
+      expect {docking_station.release_bike}.to raise_error("No bikes available")
+    end
+
+    it 'if no working bike are available it returns a message' do
+      allow(bike1).to receive(:report_broken)
+      allow(bike1).to receive(:working?)
+      docking_station.dock(bike1, false)
+      expect(docking_station.release_bike).to eq 'No working bikes'
+    end
+
+    it 'does not release a broken bike, just working ones' do
+      allow(bike1).to receive(:working?).and_return(false)
+      allow(bike1).to receive(:working).and_return(false)
+      allow(bike2).to receive(:working?).and_return(true)
+      allow(bike2).to receive(:working).and_return(true) 
+      docking_station.dock(bike1)
+      docking_station.dock(bike2)
+      expect(docking_station.release_bike).to eq bike2
+    end
   end
 
-  it 'refuses to dock bike when already at capacity' do
-    allow(bike).to receive(:working?).and_return(true)
-    DockingStation::DEFAULT_CAPACITY.times { subject.dock(bike) }
-    expect {subject.dock(bike)}.to raise_error("Already full")
+  describe '#dock' do
+    it 'refuses to dock bike when already at capacity' do
+      allow(bike1).to receive(:working?).and_return(true)
+      DockingStation::DEFAULT_CAPACITY.times { docking_station.dock(bike1) }
+      expect {docking_station.dock(bike1)}.to raise_error("Already full")
+    end
+
+    it 'calls report_broken if the bike is not working' do
+      expect(bike1).to receive(:report_broken)
+      docking_station.dock(bike1, false)
+    end
+
+    it 'docks a bike when not full' do
+      docking_station.dock(bike1)
+      expect(docking_station.bikes).to eq [bike1]
+    end
   end
 
-  it 'refuses to call private methods' do
-    expect {subject.full?}.to raise_error(NoMethodError)
-  end
-
-  it 'allows a user to input a capacity' do
-    station = DockingStation.new(30)
-    expect(station.capacity).to eq 30
-  end
-
-  it 'capacity defaults to DEFAULT_CAPACITY if no user input' do
-    expect(subject.capacity).to eq 20
-  end
-
-    let(:bike3) { double :bike3 }
-  it 'docking station does not release a broken bike, just working ones' do
-    allow(bike3).to receive(:working?).and_return(false)
-    allow(bike3).to receive(:working).and_return(false)
-    allow(bike).to receive(:working?).and_return(true)
-    allow(bike).to receive(:working).and_return(true)
-
-    bike1 = bike3
-    bike2 = bike  #potentially an issue?
-    subject.dock(bike1)
-    subject.dock(bike2)
-    expect(subject.release_bike).to eq bike2
-  end
-
-  # it { is_expected.to respond_to(:repair) }
-
-  it 'broken_bikes method collects the broken bikes' do
-    bike1 = Bike.new
-    subject.dock(bike1, false)
-    expect(subject.broken_bikes).to eq [bike1]
+  describe '#broken_bikes' do
+    it 'collects the broken bikes' do
+      allow(bike1).to receive(:report_broken)
+      allow(bike1).to receive(:working?)
+      docking_station.dock(bike1, false)
+      expect(docking_station.broken_bikes).to eq [bike1]
+    end
   end
 end

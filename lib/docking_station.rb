@@ -14,9 +14,7 @@ class DockingStation
 
   def release_bike
     fail 'No bikes available' if empty?
-    @bikes.each do |bike|
-      return @bikes.delete(bike) if bike.working?
-    end
+    @bikes.each { |bike| return @bikes.delete(bike) if bike.working? }
     "No working bikes"
   end
 
@@ -28,12 +26,13 @@ class DockingStation
 
   def broken_bikes
     @bikes.each do |bike|
-      if !bike.working?
-        @broken << @bikes.delete(bike)
+      @broken << @bikes.delete(bike) if !bike.working?
       end
     end
     @broken
   end
+
+private
 
   def full?
     @bikes.length >= @capacity
@@ -43,12 +42,4 @@ class DockingStation
     @bikes.empty?
   end
 
-  private :full?, :empty?
 end
-
-
-# station = DockingStation.new
-# bike = Bike.new
-# bike2 = Bike.new
-# p station.dock(bike)
-# p station.dock(bike,false)
